@@ -132,36 +132,8 @@ wrapper = Extension(
         "cosmic/src/bpp_array.f",
         "cosmic/src/checkstate.f",
     ],
-)  # extra_compile_args = ["-g","-O0"], extra_f77_compile_args=["-O0"], extra_f90_compile_args=["-O0"])
-
-wrapperMETISSE = Extension(
-    "cosmic._evolvebin_METISSE",
-    sources=[
-        "cosmic/src/zcnsts_METISSE.f90",
-        "cosmic/src/comenv.f",
-        "cosmic/src/corerd.f",
-        "cosmic/src/deltat.f",
-        "cosmic/src/dgcore.f",
-        "cosmic/src/evolv2.f",
-        "cosmic/src/gntage.f",
-        "cosmic/src/hrdiag.f",
-        "cosmic/src/instar.f",
-        "cosmic/src/kick.f",
-        "cosmic/src/mix.f",
-        "cosmic/src/mlwind.f",
-        "cosmic/src/mrenv.f",
-        "cosmic/src/ran3.f",
-        "cosmic/src/rl.f",
-        "cosmic/src/star.f",
-        "cosmic/src/zcnsts.f",
-        "cosmic/src/zfuncs.f",
-        "cosmic/src/concatkstars.f",
-        "cosmic/src/comprad.f",
-        "cosmic/src/bpp_array.f",
-        "cosmic/src/checkstate.f",
-    ],
-    extra_f90_compile_args = ["-ffree-form", "-fimplicit-none"]
-) 
+ extra_compile_args = ["-g","-O0"], extra_f77_compile_args=["-O0"], 
+ extra_f90_compile_args=["-O0", "-ffree-form", "-fimplicit-none"])
 
 
 # -- run setup ----------------------------------------------------------------
@@ -175,7 +147,7 @@ setup(name=DISTNAME,
       description="Compact Object Synthesis and Monte Carlo Investigation Code",
       long_description=long_description,
       long_description_content_type='text/markdown',
-      ext_modules=[wrapper, wrapperMETISSE],
+      ext_modules=[wrapper],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
