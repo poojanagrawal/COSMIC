@@ -245,6 +245,10 @@ Cf2py intent(out) bpp_index_out
 Cf2py intent(out) bcm_index_out
 Cf2py intent(out) kick_info_out
 
+      WRITE(*,*), 'z in evol2', z
+      CALL zcnsts_METISSE(z,zpars)
+      STOP
+
       if(using_cmc.eq.0)then
               CALL instar
       endif

@@ -395,6 +395,7 @@ class Evolve(object):
         return bpp, bcm, initialbinarytable, kick_info
 
 
+
 def _evolve_single_system(f):
     try:
         f["kick_info"] = np.zeros((2, len(KICK_COLUMNS)-1))
