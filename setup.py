@@ -32,6 +32,7 @@ from distutils.command.sdist import sdist
 
 try:
     from numpy.distutils.core import setup, Extension
+    from numpy.distutils.ccompiler import CCompiler_object_filenames
 except ImportError:
     raise ImportError("Building fortran extensions requires numpy.")
 
@@ -109,7 +110,7 @@ extras_require = {
 wrapper = Extension(
     "cosmic._evolvebin",
     sources=[
-        "cosmic/src/zcnsts_METISSE.f90",
+        "cosmic/src/zcnsts_METISSE.f90"
         "cosmic/src/comenv.f",
         "cosmic/src/corerd.f",
         "cosmic/src/deltat.f",
@@ -131,10 +132,15 @@ wrapper = Extension(
         "cosmic/src/comprad.f",
         "cosmic/src/bpp_array.f",
         "cosmic/src/checkstate.f",
-    ],
- extra_compile_args = ["-g","-O0"], extra_f77_compile_args=["-O0"], 
- extra_f90_compile_args=["-O0", "-ffree-form", "-fimplicit-none"])
+    ]#,
+# extra_compile_args = ["-g","-O0"], extra_f77_compile_args=["-O0"],
+# extra_f90_compile_args=["-O0", "-ffree-form", "-fimplicit-none"]
+)
 
+
+mod1 = CCompiler_object_filenames(
+    "cosmic._track_support",
+    sources=["cosmic/src/track_support.f90"])
 
 # -- run setup ----------------------------------------------------------------
 
@@ -147,7 +153,7 @@ setup(name=DISTNAME,
       description="Compact Object Synthesis and Monte Carlo Investigation Code",
       long_description=long_description,
       long_description_content_type='text/markdown',
-      ext_modules=[wrapper],
+      ext_modules=[wrapper,wrapper1],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
