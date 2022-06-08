@@ -110,7 +110,8 @@ extras_require = {
 wrapper = Extension(
     "cosmic._evolvebin",
     sources=[
-        "cosmic/src/zcnsts_METISSE.f90"
+        "cosmic/src/track_support.f90",
+        "cosmic/src/zcnsts_METISSE.f90",
         "cosmic/src/comenv.f",
         "cosmic/src/corerd.f",
         "cosmic/src/deltat.f",
@@ -138,9 +139,9 @@ wrapper = Extension(
 )
 
 
-mod1 = CCompiler_object_filenames(
-    "cosmic._track_support",
-    sources=["cosmic/src/track_support.f90"])
+#mod1 = CCompiler_object_filenames(
+#    "cosmic._track_support",
+#    source_filenames=["cosmic/src/track_support.f90"])
 
 # -- run setup ----------------------------------------------------------------
 
@@ -153,7 +154,7 @@ setup(name=DISTNAME,
       description="Compact Object Synthesis and Monte Carlo Investigation Code",
       long_description=long_description,
       long_description_content_type='text/markdown',
-      ext_modules=[wrapper,wrapper1],
+      ext_modules=[wrapper],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
