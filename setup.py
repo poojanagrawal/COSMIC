@@ -111,6 +111,7 @@ wrapper = Extension(
     "cosmic._evolvebin",
     sources=[
         "cosmic/src/track_support.f90",
+        "cosmic/src/z_support.f90",
         "cosmic/src/zcnsts_METISSE.f90",
         "cosmic/src/comenv.f",
         "cosmic/src/corerd.f",

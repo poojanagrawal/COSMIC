@@ -1,6 +1,6 @@
 subroutine zcnsts_METISSE(z,zpars)
     use track_support
-!    use z_support
+    use z_support
 !    use remnant_support
 
 !    integer, parameter :: dp = selected_real_kind(p=15)
@@ -10,5 +10,6 @@ subroutine zcnsts_METISSE(z,zpars)
 
     print*, 'METISSE Zcnsts', z
     zpars = 0.0
+    print*, center_gamma_limit
 end subroutine zcnsts_METISSE
 
