@@ -1,0 +1,19 @@
+!you can define input parameters here
+!   NOTE: SSE_input_controls in evolve.in are read only when METISSE is called directly though its main unit.
+!   otherwise, values provided by the overlying code are used.
+
+&SSE_input_controls
+
+
+/
+
+&extra_controls
+
+
+INPUT_FILES_DIR = '/Users/poojan/stellar_tracks/MESA/ovs/zsun_ovs0p33/eeps'
+!key_columns_file = '/Users/poojan/BSE/bse_metisse/eep_read_columns.dat'
+
+
+/
+
+

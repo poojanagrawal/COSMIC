@@ -110,9 +110,9 @@ extras_require = {
 wrapper = Extension(
     "cosmic._evolvebin",
     sources=[
-        "cosmic/src/track_support.f90",
-        "cosmic/src/z_support.f90",
-        "cosmic/src/zcnsts_METISSE.f90",
+        "cosmic/src/METISSE/src/track_support.f90",
+        "cosmic/src/METISSE/src/z_support.f90",
+        "cosmic/src/METISSE/src/zcnsts_METISSE.f90",
         "cosmic/src/comenv.f",
         "cosmic/src/corerd.f",
         "cosmic/src/deltat.f",
@@ -135,15 +135,11 @@ wrapper = Extension(
         "cosmic/src/bpp_array.f",
         "cosmic/src/checkstate.f",
     ],
-    module_dirs=["./"]
-# extra_compile_args = ["-g","-O0"], extra_f77_compile_args=["-O0"],
-# extra_f90_compile_args=["-O0", "-ffree-form", "-fimplicit-none"]
+# ,module_dirs=["cosmic/src/mod/"]
+# ,extra_compile_args = ["-g","-O0"],
+    extra_f77_compile_args=["-O0","-fimplicit-none", "-g", "-fbacktrace",  "-fcheck=all", "-Wall"],
+    extra_f90_compile_args=["-O0", "-fimplicit-none", "-g", "-fbacktrace",  "-fcheck=all", "-Wall"]
 )
-
-
-#mod1 = CCompiler_object_filenames(
-#    "cosmic._track_support",
-#    source_filenames=["cosmic/src/track_support.f90"])
 
 # -- run setup ----------------------------------------------------------------
 
