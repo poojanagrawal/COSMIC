@@ -116,5 +116,5 @@ subroutine zcnsts_METISSE(z,zpars)
         call assign_commons()
     endif
 
-end subroutine zcnsts
+end subroutine zcnsts_METISSE
 
