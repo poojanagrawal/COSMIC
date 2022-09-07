@@ -4,6 +4,7 @@ module z_support
 
     character(len=strlen) :: format_file, key_columns_file, INPUT_FILES_DIR
     logical :: read_files_from_Z, read_eep_files
+    character(len=strlen) :: default_infile,METISSE_infile
 
     character(len=strlen) :: Z_folder_list
     !format_specifications
@@ -79,11 +80,17 @@ logical :: cosmic_flag
             read(unit = 100, nml = extra_controls)
         close(100)
 
-        !reading user input
-!        open(10,FILE='evolve_metisse.in',action="read")
-!            if (direct_call) read(unit = 10, nml = SSE_input_controls)
-!            read(unit = 10, nml = extra_controls)
-!        close(10)
+!        reading user input
+        if (cosmic_flag) then
+            METISSE_infile = 'METISSE/evolve_metisse.in'
+        else
+            METISSE_infile = 'evolve_metisse.in'
+        endif
+
+        open(10,FILE=METISSE_infile,action="read")
+            if (direct_call) read(unit = 10, nml = SSE_input_controls)
+            read(unit = 10, nml = extra_controls)
+        close(10)
          
     end subroutine
     

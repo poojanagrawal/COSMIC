@@ -20,7 +20,7 @@ module track_support
     logical :: direct_call = .false.
 
 
-    character(len=strlen) :: METISSE_DIR, eep_dir,default_infile
+    character(len=strlen) :: METISSE_DIR, eep_dir
     real(dp) :: pts_1,pts_2,pts_3
     integer :: low_mass_final_eep, high_mass_final_eep
     integer, allocatable :: key_eeps(:)
