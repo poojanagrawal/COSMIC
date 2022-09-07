@@ -292,13 +292,11 @@ module track_support
         integer, intent(in) :: iounit
         logical :: bad_iounit
         bad_iounit = .false.
-        !$omp critical (utils_alloc_io_unit)
         if (iounit >= min_io_unit .and. iounit <= max_io_unit) then
             assigned(iounit) = .false.
         else
             bad_iounit = .true.
         end if
-        !$omp end critical (utils_alloc_io_unit)
         if (bad_iounit) then
             write(*,*) 'called free_iounit with invalid arg', iounit
             stop 'free_iounit'

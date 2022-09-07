@@ -110,11 +110,11 @@ subroutine zcnsts_METISSE(z,zpars)
     Z04 = initial_Z**0.4
     zpars(14) = initial_Z**0.4
 
-    if (direct_call) then
-        call set_remnant_scheme()
-    else
-        call assign_commons()
-    endif
+    ! if (direct_call) then
+    !     call set_remnant_scheme()
+    ! else
+    !     call assign_commons()
+    ! endif
 
 end subroutine zcnsts_METISSE
 
