@@ -3,7 +3,7 @@
      \ dtp,mass0,rad,lumin,massc,radc,
      \ menv,renv,ospin,B_0,bacc,tacc,epoch,tms,
      \ bhspin,tphys,zpars,bkick,kick_info,
-     \ bpp_index_out,bcm_index_out,kick_info_out)
+     \ bpp_index_out,bcm_index_out,kick_info_out,bpp_out)
       IMPLICIT NONE
       INCLUDE 'const_bse.h'
       INCLUDE 'checkstate.h'
@@ -213,7 +213,7 @@
       PARAMETER(kw3=619.2d0,wsun=9.46d+07,wx=9.46d+08)
       LOGICAL output
 *
-      REAL*8 qc_fixed
+      REAL*8 qc_fixed,bpp_out(1000,43)
       LOGICAL switchedCE,disrupt
 
 Cf2py intent(in) kstar
@@ -244,15 +244,20 @@ Cf2py intent(in) kick_info
 Cf2py intent(out) bpp_index_out
 Cf2py intent(out) bcm_index_out
 Cf2py intent(out) kick_info_out
+Cf2py intent(out) bpp_out
 
-      zpars = 1.0
       WRITE(*,*), 'z in evol2', z, zpars(1)
       CALL zcnsts_METISSE(z,zpars)
       WRITE(*,*), 'z in evol2', z, zpars(1)
       STOP
+      zpars = 1.0
+      WRITE(*,*)mass,kstar,tb
+      CALL zcnsts(z,zpars)
+      WRITE(*,*)mass,kstar,tb
+
 
       if(using_cmc.eq.0)then
-              CALL instar
+         CALL instar
       endif
 
 *
@@ -450,6 +455,8 @@ component.
 *
  500  continue
 *
+      WRITE(*,*)tphys, mass, kstar, tb
+
       if(output) write(*,*)'Init:',mass(1),mass(2),massc(1),massc(2),
      & rad(1),rad(2),kstar(1),kstar(2),sep,ospin(1),ospin(2),jspin(1),
      & jspin(2),sigma,eddfac,z,id1_pass,id2_pass,tphysf,tphys,iter,tsave
@@ -4408,6 +4415,7 @@ component.
           bcm_index_out = ip
           bpp_index_out = jp
           kick_info_out = kick_info
+          bpp_out = bpp
       endif
 *
 
