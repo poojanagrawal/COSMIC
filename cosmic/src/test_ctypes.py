@@ -1,6 +1,11 @@
 from ctypes import *
 import numpy as np
-libc = cdll.LoadLibrary("evolv2.so")
+import os
+
+#print('cwd=',os.getcwd())
+#print('list=',os.listdir())
+
+libc = cdll.LoadLibrary(os.path.abspath("evolv2.so"))
 
 
 def evolv2(m1, m2, tb, e, alpha, vk, theta, phi, omega):

@@ -15,6 +15,7 @@ module z_support
     integer :: extra_cols = 3
 
    character:: extra_char
+logical :: cosmic_flag
 
     !used to set star_type_from_history
     ! central limits for high- / intermediate-mass stars, set these from input eep_controls nml
@@ -66,7 +67,14 @@ module z_support
     subroutine read_metisse_input()
     
         !reading defaults option first
-        open(100, file = 'defaults/evolve_metisse_defaults.in' )
+        cosmic_flag = .true.
+        if (cosmic_flag) then
+            default_infile = 'METISSE/defaults/evolve_metisse_defaults.in'
+        else
+            default_infile = 'defaults/evolve_metisse_defaults.in'
+        endif
+
+        open(100, file = default_infile)
             read(unit = 100, nml = SSE_input_controls)
             read(unit = 100, nml = extra_controls)
         close(100)

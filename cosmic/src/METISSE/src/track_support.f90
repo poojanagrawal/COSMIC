@@ -3,6 +3,7 @@ module track_support
     !some subroutines of module have been adpated from iso_eep_support module of ISO package (Dotter 2016).
 
     implicit none
+
     integer, parameter :: min_io_unit = 29
     integer, parameter :: max_io_unit = 99
     logical :: assigned(max_io_unit) = .false.
@@ -19,7 +20,7 @@ module track_support
     logical :: direct_call = .false.
 
 
-    character(len=strlen) :: METISSE_DIR, eep_dir
+    character(len=strlen) :: METISSE_DIR, eep_dir,default_infile
     real(dp) :: pts_1,pts_2,pts_3
     integer :: low_mass_final_eep, high_mass_final_eep
     integer, allocatable :: key_eeps(:)
