@@ -47,7 +47,6 @@ subroutine zcnsts_METISSE(z,zpars)
 
     !determine key columns 
     if (key_columns_file /= '') call process_columns(key_columns_file,key_cols,ierr)
-    if (debug) print*,"using key columns", key_cols % name
 
     !get column numbers for core related quantities
 !    call get_core_columns()
@@ -84,12 +83,14 @@ subroutine zcnsts_METISSE(z,zpars)
 
         endif
 
-        if (size(key_cols)<1) then
+        ! print*, 'key cols size',size(key_cols)
+        if (size(key_cols)<=1) then
             allocate(key_cols(s(1)% ncol))
             key_cols% name = s(1)% cols% name
         end if
 
     if(debug) print*, s(1)% cols% name, s(1)% tr(:,1)
+    if(debug) print*,"using key columns", key_cols(1) 
 
     !locates key columns of mass, age etc.
     call locate_column_numbers(s,key_cols)
