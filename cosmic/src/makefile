@@ -51,7 +51,7 @@ OBJT1 = $(SRCE1:.f=.o)
 	$(FC) $(OMP) $(FFLAGS1) -c $<
 
 evolv2 : $(OBJT1) track_support.o z_support.o zcnsts_METISSE.o
-	$(FC) -o evolv2.so $^
+	$(FC) $(FFLAGS3) -o evolv2.so $^
 #gfortran -shared -o evolv2.so *.o
 
 clean:
