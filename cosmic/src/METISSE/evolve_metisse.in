@@ -12,7 +12,7 @@
 
 INPUT_FILES_DIR = '~/projects/METISSE_test/mist_files/MIST_v1.2_feh_p0.00_afe_p0.0_vvcrit0.0_EEPS/'
 format_file = 'METISSE/defaults/format_mist.dat'
-!key_columns_file = '/Users/poojan/BSE/bse_metisse/eep_read_columns.dat'
+key_columns_file = 'METISSE/eep_read_columns.dat'
 
 
 /
