@@ -49,6 +49,7 @@
         bpp(jp,8) = ecc
         bpp(jp,9) = rrl1
         bpp(jp,10) = rrl2
+        if (ecsn_active) evolve_type = 50
         bpp(jp,11) = evolve_type
         bpp(jp,12) = aj1
         bpp(jp,13) = aj2

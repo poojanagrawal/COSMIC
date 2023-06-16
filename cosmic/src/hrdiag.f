@@ -78,6 +78,7 @@
 *       MC      Core mass.
 *       ---------------------------------------------------------------------
 *
+      ecsn_active = .false.
 *
 * Make evolutionary changes to stars that have not reached KW > 5.
 *
@@ -466,14 +467,17 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                mt = mc
                if(ecsn.gt.0.d0.and.mcbagb.lt.ecsn_mlow)then
                   kw = 11
+                  ecsn_active = .true.
                elseif(ecsn.eq.0.d0.and.mcbagb.lt.1.6d0)then !double check what this should be. should be ecsn_mlow. Remember need to add option if ecsn = 0 (i.e. no ECSN!!!)
 *
 * Zero-age Carbon/Oxygen White Dwarf
 *
                   kw = 11
+                  ecsn_active = .true.
                elseif(ecsn.gt.0.d0.and.mcbagb.ge.ecsn_mlow.and.
      &                mcbagb.le.ecsn.and.mc.lt.1.08d0)then
                   kw = 11
+                  ecsn_active = .true.
 *               elseif(mcbagb.ge.1.6d0.and.mcbagb.le.2.5d0.and.
 *                      mc.lt.1.08d0)then !can introduce this into code at some point.
 *                  kw = 11
@@ -483,6 +487,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 * Zero-age Oxygen/Neon White Dwarf
 *
                   kw = 12
+                  ecsn_active = .true.
                endif
                mass = mt
 *
@@ -497,6 +502,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   mt = 0.d0
                   lum = 1.0d-10
                   r = 1.0d-10
+                  ecsn_active = .true.
                elseif(ecsn.eq.0.d0.and.mcbagb.lt.1.6d0)then
 *
 * Star is not massive enough to ignite C burning.
@@ -507,6 +513,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   mt = 0.d0
                   lum = 1.0d-10
                   r = 1.0d-10
+                  ecsn_active = .true.
                else
                   if(remnantflag.eq.0)then
                      mt = 1.17d0 + 0.09d0*mc
@@ -536,6 +543,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mcbagb.le.ecsn.and.
      &                    mcbagb.ge.ecsn_mlow)then
                         mcx = 1.38d0
+                        ecsn_active = .true.
 *                     elseif(mc.lt.4.29d0)then
                      elseif(mc.lt.4.82d0)then
                         mcx = 1.5d0
@@ -580,6 +588,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mcbagb.le.ecsn.and.
      &                    mcbagb.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
+                        ecsn_active = .true.
                      elseif(mc.le.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx) 
                         mt = mcx + 0.2d0
@@ -628,6 +637,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mcbagb.le.ecsn.and.
      &                    mcbagb.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
+                        ecsn_active = .true.
                      elseif(mc.lt.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx) 
                         mt = mcx + 0.2
@@ -857,16 +867,19 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   if(ecsn.gt.0.d0.and.mass.lt.ecsn_mlow)then
                      mt = MAX(mc,(mc+0.31d0)/1.45d0)
                      kw = 11
+                     ecsn_active = .true.
                   elseif(ecsn.eq.0.d0.and.mass.lt.1.6d0)then
 *
 * Zero-age Carbon/Oxygen White Dwarf
 *
                      mt = MAX(mc,(mc+0.31d0)/1.45d0)
                      kw = 11
+                     ecsn_active = .true.
                   elseif(ecsn.gt.0.d0.and.mass.gt.ecsn_mlow.and.
      &                   mass.le.ecsn.and.mc.le.1.08d0)then
                      mt = MAX(mc,(mc+0.31d0)/1.45d0)
                      kw = 11
+                     ecsn_active = .true.
                   else
 *
 * Zero-age Oxygen/Neon White Dwarf
@@ -882,6 +895,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      mt = 0.d0
                      lum = 1.0d-10
                      r = 1.0d-10
+                     ecsn_active = .true.
                   elseif(ecsn.eq.0.d0.and.mass.lt.1.6d0)then
 *
 * Star is not massive enough to ignite C burning.
@@ -892,6 +906,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      mt = 0.d0
                      lum = 1.0d-10
                      r = 1.0d-10
+                     ecsn_active = .true.
                   else
                      if(remnantflag.eq.0)then
                         mt = 1.17d0 + 0.09d0*mc
@@ -917,6 +932,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
      &                    mc.ge.ecsn_mlow)then
                         mcx = 1.38d0
+                        ecsn_active = .true.
                      elseif(mc.lt.4.82d0)then
                         mcx = 1.5d0
                      elseif(mc.ge.4.82d0.and.mc.lt.6.31d0)then
@@ -959,6 +975,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
      &                    mc.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
+                        ecsn_active = .true.
                      elseif(mc.le.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2d0
@@ -1007,6 +1024,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
      &                    mc.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
+                        ecsn_active = .true.
                      elseif(mc.lt.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2
@@ -1211,6 +1229,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                if(ecsn.gt.0.d0)then
                   mt = 1.38d0
                   mt = 0.9d0*mt !in ST this is a quadratic, will add in later.
+                  ecsn_active = .true.
                endif
             else
                kw = 15
