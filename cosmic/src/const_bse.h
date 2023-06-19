@@ -36,10 +36,10 @@
       REAL*8 sigma,sigmadiv,bhsigmafrac,pisn,mxns
       REAL*8 polar_kick_angle
       REAL*8 ecsn,ecsn_mlow,bhspinmag,rembar_massloss
-      LOGICAL ecsn_active
+      LOGICAL ecsn_dc,ecsn_wd
       REAL*8 natal_kick_array(2,5)
       COMMON /SNVARS/ natal_kick_array,sigma,sigmadiv,bhsigmafrac,
-     &            polar_kick_angle,pisn,ecsn,ecsn_mlow,ecsn_active,
+     &            polar_kick_angle,pisn,ecsn,ecsn_mlow,ecsn_dc,ecsn_wd,
      &            bhspinmag,mxns,rembar_massloss,kickflag
       REAL*8 fprimc_array(16)
       COMMON /TIDALVARS/ fprimc_array

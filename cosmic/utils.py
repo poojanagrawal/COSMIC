@@ -1453,12 +1453,12 @@ def check_initial_conditions(initial_binary_table):
         mask = ((np.array(initial_binary_table["kstar_1"]) == 1) & (rzams1 >= rol1)) | (
             (initial_binary_table["kstar_2"] == 1) & (rzams2 >= rol2)
         )
-        if mask.any():
-            warnings.warn(
-                "At least one of your initial binaries is starting in Roche Lobe Overflow:\n{0}".format(
-                    initial_binary_table[mask]
-                )
-            )
+#        if mask.any():
+#            warnings.warn(
+#                "At least one of your initial binaries is starting in Roche Lobe Overflow:\n{0}".format(
+#                    initial_binary_table[mask]
+#                )
+#            )
 
         return
 
@@ -1514,7 +1514,8 @@ def convert_kstar_evol_type(bpp):
         14: "blue straggler",
         15: "supernova of primary",
         16: "supernova of secondary",
-        50: "ECSNE",
+        50: "ECSN of primary",
+        51: "ECSN of secondary",
        100: "RLOF interpolation timeout error"
     }
 
