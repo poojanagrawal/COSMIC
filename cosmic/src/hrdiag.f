@@ -920,8 +920,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 * Use NS/BH masses given by Belczynski+08. PK.
 *
                      !First calculate the proto-core mass
-                     if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
-     &                    mc.ge.ecsn_mlow)then
+                     if(ecsn.gt.0.d0.and.mass.le.ecsn.and.
+     &                    mass.ge.ecsn_mlow)then
                         mcx = 1.38d0
                         ecsn_dc = .true.
                      elseif(mc.lt.4.82d0)then
@@ -963,8 +963,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
 *                    We use the updated proto-core mass from Giacobbo & Mapelli 2020
                      mcx = 1.1d0
-                     if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
-     &                    mc.ge.ecsn_mlow)then
+                     if(ecsn.gt.0.d0.and.mass.le.ecsn.and.
+     &                    mass.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
                         ecsn_dc = .true.
                      elseif(mc.le.2.5d0)then
@@ -1012,8 +1012,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.6d0
                      endif
 
-                     if(ecsn.gt.0.d0.and.mc.le.ecsn.and.
-     &                    mc.ge.ecsn_mlow)then
+                     if(ecsn.gt.0.d0.and.mass.le.ecsn.and.
+     &                    mass.ge.ecsn_mlow)then
                         mt = 1.38d0   ! ECSN fixed mass, no fallback
                         ecsn_dc = .true.
                      elseif(mc.lt.2.5d0)then
