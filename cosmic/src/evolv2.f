@@ -1221,6 +1221,7 @@ component.
      &      (kw.eq.13.or.kw.eq.14)).or.(ABS(merger).ge.20.d0))then
             if(formation(k).ne.11) formation(k) = 1
             if(kw.eq.13.and.ecsn.gt.0.d0)then
+*               print*,'ecsn check',k,mt,kstar(k),ecsn_wd,ecsn_dc
                if(kstar(k).le.6)then
                   if(mass0(k).le.zpars(5))then
                      if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
@@ -3459,6 +3460,8 @@ component.
             dms(k) = mass(k) - mt
             if(formation(k).ne.11) formation(k) = 1
             if(kw.eq.13.and.ecsn.gt.0.d0)then
+*               print*,'ecsn check',k,mt,kstar(k),ecsn_wd,ecsn_dc
+
                if(kstar(k).le.6)then
                   if(mass0(k).le.zpars(5))then
                      if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then

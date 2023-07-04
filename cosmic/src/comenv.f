@@ -220,6 +220,7 @@
             IF(KW1.GE.13)THEN
                formation1 = 1
                if(KW1.eq.13.and.ecsn.gt.0.d0)then
+*               print*,'ecsn check 1 ',m1,kw1i,ecsn_wd,ecsn_dc
                   if(KW1i.le.6)then
                      if(M1i.le.zpars(5))then
                         if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
@@ -522,6 +523,7 @@
             IF(KW1.GE.13)THEN
                formation1 = 1
                if(KW1.eq.13.and.ecsn.gt.0.d0)then
+*               print*,'ecsn check 1 ',m1,kw1i,ecsn_wd,ecsn_dc
                   if(KW1i.le.6)then
                      if(M1i.le.zpars(5))then
                         if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
@@ -682,9 +684,10 @@
             CALL hrdiag(M02,AJ2,M2,TM2,TN,TSCLS2,LUMS,GB,ZPARS,
      &                  R2,L2,KW2,MC2,RC2,MENV,RENV,K22,
      &                  bhspin2,star2)
-            IF(KW2.GE.13.AND.KW.LT.13)THEN
+            IF(KW2.GE.13.AND.KW2i.LT.13)THEN
                formation2 = 1
                if(KW2.eq.13.and.ecsn.gt.0.d0)then
+*               print*,'ecsn check 2 ',m2,kw2i,ecsn_wd,ecsn_dc
                   if(KW2i.le.6)then
                      if(M2i.le.zpars(5))then
                         if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
@@ -918,9 +921,10 @@
      &               R1,L1,KW,MC1,RC1,MENV,RENV,K21,
      &               bhspin1,star1)
          if(output) write(*,*)'coel 2 5:',KW,M1,M01,R1,MENV,RENV
-         IF(KW1i.LE.12.and.KW.GE.13)THEN
+         IF(KW.GE.13.and.KW1i.LE.12)THEN
             formation1 = 1
-            if(KW1.eq.13.and.ecsn.gt.0.d0)then
+            if(KW.eq.13.and.ecsn.gt.0.d0)then
+*            print*,'ecsn check 1 ',m1,kw1i,ecsn_wd,ecsn_dc
                if(KW1i.le.6)then
                   if(M1i.le.zpars(5))then
                      if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then

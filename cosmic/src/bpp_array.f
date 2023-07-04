@@ -50,16 +50,16 @@
         bpp(jp,9) = rrl1
         bpp(jp,10) = rrl2
         if(ecsn_wd.and.evolve_type>=15) then
-            print*,evolve_type,'to',25+evolve_type,kstar1,kstar2
+*            print*,evolve_type,'to',25+evolve_type,kstar1,kstar2
             evolve_type = 25+evolve_type
         endif
         if(ecsn_dc.and.evolve_type>=15) then
-            print*,evolve_type,'to',35+evolve_type,kstar1,kstar2
+*            print*,evolve_type,'to',35+evolve_type,kstar1,kstar2
             evolve_type = 35+evolve_type
         endif
         
-        if ((ecsn_wd .or. ecsn_dc ) .and. evolve_type==1)
-     &                print*,mass1,mass2,tb,kstar1,kstar2
+*        if ((ecsn_wd .or. ecsn_dc ))
+*     &          print*,evolve_type,mass1,mass2,tb,kstar1,kstar2
         bpp(jp,11) = evolve_type
         bpp(jp,12) = aj1
         bpp(jp,13) = aj2
