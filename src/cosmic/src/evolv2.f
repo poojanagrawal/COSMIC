@@ -984,7 +984,7 @@ component.
                   djmb = 5.83d-16*menv(k)*(rad(k)*ospin(k))**3/mass(k)
                   djspint(k) = djspint(k) + djmb
                endif
-            else
+            elseif(htpmb.eq.1)then
                if(ST_cr.le.0.and.
      &            mass(k).gt.0.35d0.and.kstar(k).lt.10.and.
      &            menv(k).gt.0.0d0)then
@@ -2277,9 +2277,9 @@ component.
          dm1 = mass(j1)
          if(kstar(j2).le.1)then
 *
-* Restrict accretion to thermal timescale of secondary.
+* Assume perfect accretion efficiency
 *
-            dm2 = taum/tkh(j2)*dm1
+            dm2 = dm1
             mass(j2) = mass(j2) + dm2
 *
 * Rejuvenate if the star is still on the main sequence.
@@ -2511,7 +2511,12 @@ component.
          taum = SQRT(tkh(j1)*tdyn)
          dm1 = mass(j1)
          if(eddfac.lt.10.d0)then
-            dm2 = MIN(dme*taum/tb,dm1)
+*            dm2 = MIN(dme*taum/tb,dm1)
+            if(wd_mass_lim.eq.1)then
+               dm2 = MIN(dme*taum/tb,dm1)
+            elseif(wd_mass_lim.eq.1)then
+               dm2 = dm1
+            endif
             if(dm2.lt.dm1) supedd = .true.
          else
             dm2 = dm1
@@ -2525,7 +2530,7 @@ component.
 *
             kstar(j2) = 15
             mass(j2) = 0.d0
-         elseif(kstar(j1).eq.10.or.kstar(j2).gt.10)then
+         elseif(kstar(j1).eq.10.and.kstar(j2).gt.10)then
 *
 * Should be helium overflowing onto a CO or ONe core in which case the
 * helium swells up to form a giant envelope so a HeGB star is formed.
@@ -3135,7 +3140,7 @@ component.
                   djmb = 5.83d-16*menv(k)*(rad(k)*ospin(k))**3/mass(k)
                   djspint(k) = djspint(k) + djmb*dt
                endif
-            else
+            elseif(htpmb.eq.1)then
                if(ST_cr.le.0.and.
      &            (mass(k).gt.0.35d0.and.kstar(k).lt.10.and.
      &            menv(k).gt.0.0d0))then
@@ -3979,7 +3984,7 @@ component.
          CALL comenv(mass0(j2),mass(j2),massc(j2),aj(j2),jspin(j2),
      &               kstar(j2),mass0(j1),mass(j1),massc(j1),aj(j1),
      &               jspin(j1),kstar(j1),zpars,ecc,sep,jorb,coel,j2,j1,
-     &               vk,kick_info,formation(j1),formation(j2),sigmahold,
+     &               vk,kick_info,formation(j2),formation(j1),sigmahold,
      &               bhspin(j2),bhspin(j1),binstate,mergertype,
      &               jp,tphys,switchedCE,rad,tms,evolve_type,disrupt,
      &               lumin,B_0,bacc,tacc,epoch,menv,renv,bkick,dtm)
@@ -4148,8 +4153,12 @@ component.
          if(com)then
             com = .false.
          else
-            mass1_bpp = mass(1)
-            mass2_bpp = mass(2)
+*
+* KB remove these 20 jul 23: we want the stars to not have mass
+* if they are kstar=15
+*
+*            if(kstar(1).eq.15) mass1_bpp = mass0(1)
+*            if(kstar(2).eq.15) mass2_bpp = mass0(2)
             if(kstar(1).eq.15) mass1_bpp = mass0(1)
             if(kstar(2).eq.15) mass2_bpp = mass0(2)
             if(coel)then
@@ -4338,13 +4347,13 @@ component.
      &                  epoch(2),bhspin(1),bhspin(2))
           endif
           
-          if(kstar(1).eq.15.and.bpp(jp,4).lt.15.0)then
-              mass1_bpp = mass0(1)
-          endif
+*          if(kstar(1).eq.15.and.bpp(jp,4).lt.15.0)then
+*              mass1_bpp = mass0(1)
+*          endif
 
-          if(kstar(2).eq.15.and.bpp(jp,5).lt.15.0)then
-              mass2_bpp = mass0(2)
-          endif
+*          if(kstar(2).eq.15.and.bpp(jp,5).lt.15.0)then
+*              mass2_bpp = mass0(2)
+*          endif
           
           if(coel)then
               evolve_type = 6.0
