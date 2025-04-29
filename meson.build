@@ -46,6 +46,7 @@ lib_source = [
     'src/cosmic/src/hrdiag.f',
     'src/cosmic/src/star.f',
     'src/cosmic/src/zcnsts.f',
+    'src/cosmic/src/bh_xrl.f90',
     'src/cosmic/src/SSE/SSE_deltat.f',
     'src/cosmic/src/SSE/SSE_mlwind.f',
     'src/cosmic/src/SSE/SSE_hrdiag.f',

@@ -1,0 +1,153 @@
+subroutine get_bhxrl(mass_bh,mass2,radius2,teff2,X,sep,mdot_w2,Lx)
+    implicit none
+
+    ! calculations for X-ray luminsoity of accreting BHs
+    ! adapted from Sen+2024, https://arxiv.org/pdf/2406.08596
+    ! and Sen+2021, https://arxiv.org/pdf/2106.01395
+    ! X = hydrogen abundance = zpars(11)
+
+    integer, parameter :: dp = selected_real_kind(p=15)
+    integer, parameter :: high = 3, mid = 2, low = 1
+
+    real(dp), intent(in):: mass_bh,mass2,radius2,teff2,sep,X,mdot_w2
+    real(dp), intent(out):: Lx(4)
+
+    real(dp), parameter:: Lsun = 3.8418d+33            !luminosity of sun in CGS
+    real(dp), parameter:: cgrav = 6.67428d-8            !gravitational constant in CGS
+    real(dp), parameter:: msun = 1.9892d+33             !mass of sun in CGS
+    real(dp), parameter:: rsun = 6.96d+10               !radius of sun in CGS
+    real(dp), parameter:: clight_sq = 8.98755178737d+20    !speed of light in CGS
+    
+    real(dp) :: vorb1,Gamma2, v_esc, v_inf, v_wind, v_rel, Ledd, RISCO, &
+            mdot_cgs, mdot_acc, mdot_edd, mdot_net, mdot_ratio, mdot_net_csq, &
+            alpha, Racc, delta, q1, delta3, disk_crit2
+        
+    Lx = 0.d0
+    vorb1 = sqrt(cgrav*(mass_bh+mass2)*msun/sep*rsun)
+
+    Gamma2 = 0
+    
+    mdot_cgs = mdot_w2*msun/3.154e+7   ! msun/yr to gm/sec
+    !escape speed from OB star
+    v_esc = sqrt(2*cgrav*(1-Gamma2)*mass2*msun/radius2/rsun)                                    ! v_esc = sqrt(2*cgrav*(1-Gamma2)*mass2*msun/radius2/rsun)
+    
+    !differentiate between O star and B star
+    if (Teff2 > 22000) then
+        v_inf = 2.6d0*v_esc
+    else
+        v_inf = 1.3d0*v_esc
+    endif
+    
+    !wind speed from OB star
+    v_wind = v_inf*(1-radius2/sep)  !beta = 1 for MS stars
+    ! ~ 2000 * 1000 m/sec
+    
+    !relative speed of OB star w.r.t. the BH
+    v_rel = sqrt(v_wind*v_wind + vorb1*vorb1)
+    
+    !accretion disk formation criteria
+
+    Ledd = 65335*mass_bh*Lsun/(1+X)             !Eqn 24                                    
+    RISCO = 6*cgrav*mass_bh*msun/clight_sq
+    mdot_edd = Ledd*RISCO/(cgrav*mass_bh*msun)            !Eqn 28
+    
+    !Rdisc/RISCO, from eqn 10 of Sen+2021
+    q1 = (mass_bh+mass2)/mass_bh
+    disk_crit2 = 2*clight_sq*(vorb1**6)/(27*q1*q1*v_rel**8)
+                  !j_acc/3 of Shapiro+1976, eta=1/3
+    
+!    disk_crit1 = disk_crit2*9              !j_acc of Shapiro+1976
+        
+    if (disk_crit2>1) then
+        delta = (radius2*v_esc*v_esc)/(2.d0*sep*v_wind*v_wind)     !eqn 27
+        delta3 = (1+delta)**(3.0/2)
+        alpha = (4.d0*delta*delta*mass_bh*mass_bh*mdot_cgs)/(delta3*mass2*mass2*mdot_edd)
+        Lx(4)= Ledd*alpha/(1+sqrt(1+alpha))**2
+    else
+        Racc = 2*cgrav*mass_bh*msun/(v_rel*v_rel) ! Eq 8 of Sen+2021
+        mdot_acc = (mdot_cgs*Racc*Racc*v_rel)/(4.d0*sep*rsun*sep*rsun*v_wind)                    ! Eq 12 of Sen+2021
+        mdot_net = mdot_acc*(RISCO/3*Racc)**0.4   ! eqn 32
+        ! event horizon for a non-spinning BH is Risco/3. In the paper Risco is used, but we use event horizon here
+        
+        mdot_net_csq = mdot_net*clight_sq
+        mdot_ratio = mdot_net/mdot_edd
+        if (mdot_ratio.gt.1d-6) then
+            Lx(high) = interpolate(mdot_ratio,high)*mdot_net_csq
+            Lx(mid) = interpolate(mdot_ratio,mid)*mdot_net_csq
+            Lx(low) = interpolate(mdot_ratio,low)*mdot_net_csq
+        elseif((mdot_ratio.gt.1d-7).and.(mdot_ratio.le.1d-6)) then
+            Lx(high) = interpolate(mdot_ratio,high)*mdot_net_csq
+            Lx(mid) = mdot_net_csq*6d-5
+            Lx(low) = mdot_net_csq*1d-5
+        else
+            Lx(high) = mdot_net_csq*4d-5
+            Lx(mid) = mdot_net_csq*5d-6
+            Lx(low) = mdot_net_csq*1d-6
+        endif
+    endif
+    
+    contains
+
+    function interpolate(xval,crit) result(yval)
+
+    real(dp), intent(in) :: xval
+    integer, intent(in) :: crit
+    real(dp) :: yval
+    integer :: left, right, mid, n
+    real(dp) :: x1, x2, y1, y2
+    real(dp), pointer :: xdata(:), ydata(:)
+   
+    
+    include 'epsilon.h'
+
+    if (crit == high) then
+        xdata => mdot_ratio_high
+        ydata => epsilon_high
+    elseif(crit==mid) then
+        xdata => mdot_ratio_mid
+        ydata => epsilon_mid
+    elseif(crit==low)then
+        xdata => mdot_ratio_low
+        ydata => epsilon_low
+    else
+        print*,"incorrect option"
+        return
+    endif
+
+    n = size(xdata)
+    ! Handle out-of-bounds extrapolation
+    if (xval <= xdata(1)) then
+        left = 1
+        right = 2
+    else if (xval >= xdata(n)) then
+        left = n-1
+        right = n
+    else
+        ! Binary search
+        left = 1
+        right = n
+        do while (right - left > 1)
+          mid = (left + right) / 2
+          if (xval < xdata(mid)) then
+            right = mid
+          else
+            left = mid
+          end if
+        end do
+    end if
+
+    ! Linear interpolation
+    x1 = xdata(left)
+    x2 = xdata(right)
+    y1 = ydata(left)
+    y2 = ydata(right)
+
+    yval = y1 + (xval-x1)*(y2-y1)/(x2-x1)
+    ! Convert % to fraction
+    yval = yval/100
+    
+  end function
+
+
+
+end subroutine
