@@ -1,4 +1,4 @@
-subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,kstar2,sep,X,Lx)
+subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,sep,X,Lx)
     implicit none
 
     ! Input:
@@ -7,13 +7,12 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,kstar2,sep,X,Lx)
     ! radius2 = radius of the companion (RSun)
     ! teff2 = effective temperature of the companion
     ! mdot_w2 = wind mass loss rate of the companion
-    ! kstar2  = stellar type of the companion
     ! sep = orbital separation (Rsun)
     ! X = hydrogen abundance = zpars(11)
     ! for calculating eddington luminosity
     !
     ! Output:
-    ! Lx = X-ray luminsoity of accreting BHs
+    ! Lx = X-ray luminosity of accreting BHs
     !
     ! calculations adapted from Sen+2024, https://arxiv.org/pdf/2406.08596
     ! and Sen+2021, https://arxiv.org/pdf/2106.01395
@@ -21,7 +20,7 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,kstar2,sep,X,Lx)
     integer, parameter :: dp = selected_real_kind(p=15)
     integer, parameter :: high = 3, mid = 2, low = 1
 
-    real(dp), intent(in):: mass1,mass2,radius2,teff2,kstar2,sep,X,mdot_w2
+    real(dp), intent(in):: mass1,mass2,radius2,teff2,sep,X,mdot_w2
     real(dp), intent(out):: Lx(4)
 
     real(dp), parameter :: Lsun = 3.8418d+33            !luminosity of sun in CGS
@@ -33,23 +32,27 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,kstar2,sep,X,Lx)
     
     real(dp) :: vorb1,Gamma2, v_esc, v_inf, v_wind, v_rel, Ledd, RISCO, &
              mdot_acc, mdot_edd, mdot_net, mdot_ratio, mdot_net_csq, &
-            alpha, Racc, delta, q1, delta3, disk_crit2
+            alpha, Racc, delta, q1, delta3, disk_crit2, wind_multiplier
         
     Lx = 0.d0
     ! return if companion is not a OB Star on MS
-    if (kstar2>1 .or. Teff2<12500) return
+    if (Teff2<12500) return
 
-    ! eddington factor
-    Gamma2 = 0
+    !differentiate between O star and B star
+    if (Teff2 > 22000) then
+        ! Gamma2 is the eddington factor
+        Gamma2 = 0.2
+        wind_multiplier = 2.6d0
+    else
+        Gamma2 = 0.1
+        wind_multiplier = 1.3d0
+    endif
+    
     !escape speed from OB star
     v_esc = sqrt((2*cgrav*(1-Gamma2)*mass2*msun)/(radius2*rsun))                                    ! v_esc = sqrt(2*cgrav*(1-Gamma2)*mass2*msun/radius2/rsun)
     
-    !differentiate between O star and B star
-    if (Teff2 > 22000) then
-        v_inf = 2.6d0*v_esc
-    else
-        v_inf = 1.3d0*v_esc
-    endif
+    ! terminal velocity
+    v_inf = wind_multiplier *v_esc
     
     !wind speed from OB star
     ! Eqn 1 of Sen+2021, beta = 1 for MS stars
@@ -166,11 +169,10 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,kstar2,sep,X,Lx)
     y2 = ydata(right)
 
     yval = y1 + (xval-x1)*(y2-y1)/(x2-x1)
-    ! Convert % to fraction
-    yval = yval/100
+    ! for numerical raesons we interpolate in log quantities
+    ! convert back to non-log
+    yval = 10**yval
     
   end function
-
-
 
 end subroutine

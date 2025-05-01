@@ -158,7 +158,7 @@
       INTEGER kcomp1,kcomp2,formation(2)
       PARAMETER(loop=20000)
       INTEGER kstar(2),kw,kst,kw1,kw2,kmin,kmax
-      INTEGER kstar1_bpp,kstar2_bpp
+      INTEGER kstar1_bpp,kstar2_bpp, i,j
 *
       REAL*8 km,km0,tphys,tphys0,dtm0,tphys00,tphysfhold
       REAL*8 tphysf,dtp,tsave,dtp_original
@@ -186,6 +186,7 @@
       REAL*8 delet,delet1,dspint(2),djspint(2),djtx(2)
       REAL*8 dtj,djorb,djgr,djmb,djt,djtt,rmin,rdisk
       REAL*8 etaBH,maxspinBH
+      REAL*8 arr(4)
 *
       INTEGER pulsar
       INTEGER mergemsp,merge_mem,notamerger,binstate,mergertype
@@ -273,7 +274,6 @@ Cf2py intent(out) kick_info_out
       twopi = 2.d0*ACOS(-1.d0)
 
       Mbh_initial = 0.d0
-
 
 * disrupt tracks if system get disrupted by a SN during the common
 * envelope
@@ -454,6 +454,7 @@ component.
          djspint(k) = 0.d0
          dtmi(k) = 1.0d+06
          B(k) = 0.d0 !PK
+         bhxrl = 0.d0 !PA
          if(kstar(k).ne.13)then
             bacc(k) = 0.d0
             tacc(k) = 0.d0
@@ -1559,6 +1560,21 @@ component.
          do 506 , k = 1,2
             q(k) = mass(k)/mass(3-k)
  506     continue
+ 
+* calculate X-ray luminosity for BH-MS(OB type) system,
+* from Sen et al. 2021,2024
+         do 5061 , k = 1,2
+            j2 = 3-k
+            if ((kstar(k)==14) .and. (kstar(j2)==1) .and.
+     &                              (teff(j2)>12500)) then
+                call get_bhxrl(mass(k),mass(j2),rad(j2),teff(j2),
+     &                               dmr(j2),sep,zpars(11),arr)
+                do 5062, i = 1,4
+                    j = 4*(j2-1)+i
+                    BHXRL(j) = arr(i)
+5062            continue
+            endif
+5061     continue
 *
 * Determine the Roche lobe radii and adjust the radius derivative.
 *
@@ -3703,6 +3719,7 @@ component.
       do 100 , k = 1,2
          q(k) = mass(k)/mass(3-k)
          rol(k) = rl(q(k))*sep*(1.d0-ecc)
+         bhxrl = 0.d0
  100  continue
       if(rad(j1).gt.rol(j1)) radx(j1) = MAX(radc(j1),rol(j1))
       do 110 , k = 1,2

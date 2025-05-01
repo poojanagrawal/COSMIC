@@ -45,6 +45,7 @@
       COMMON /TIDALVARS/ fprimc_array
       REAL*8 rejuv_fac
       COMMON /MIXVARS/ rejuv_fac
+      REAL*8 BHXRL(8)
 *
       INTEGER*8 id1_pass,id2_pass,using_cmc
       REAL*8 merger
