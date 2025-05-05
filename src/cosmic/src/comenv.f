@@ -3,7 +3,7 @@
      &                  M02,M2,MC2,AJ2,JSPIN2,KW2,
      &                  ZPARS,ECC,SEP,JORB,COEL,star1,star2,vk,
      &                  kick_info,formation1,formation2,sigmahold,
-     &                  bhspin1,bhspin2,binstate,mergertype,
+     &                  bhspin1,bhspin2,binstate,bhxrl,mergertype,
      &                  jp,tphys,switchedCE,rad,tms,evolve_type,disrupt,
      &                  lumin,B_0,bacc,tacc,epoch,menv_bpp,renv_bpp,
      &                  bkick,deltam_1,deltam_2,dtm)
@@ -330,7 +330,7 @@
      &                      bacc(2),bacc(1),tacc(2),tacc(1),epoch(2),
      &                      epoch(1),bhspin2,bhspin1,
      &                      deltam_2,deltam_1,formation2,formation1,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    else
                        teff1 = 1000.d0*((1130.d0*lumin(1)/
      &                       (rad1_bpp**2.d0))**(1.d0/4.d0))
@@ -348,7 +348,7 @@
      &                      bacc(1),bacc(2),tacc(1),tacc(2),epoch(1),
      &                      epoch(2),bhspin1,bhspin2,
      &                      deltam_1,deltam_2,formation1,formation2,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    endif
                endif
                CALL kick(KW1,M_postCE,M1,M2,ECC,SEP_postCE,
@@ -640,7 +640,7 @@
      &                      bacc(2),bacc(1),tacc(2),tacc(1),epoch(2),
      &                      epoch(1),bhspin2,bhspin1,
      &                      deltam_2,deltam_1,formation2,formation1,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    else
                        teff1 = 1000.d0*((1130.d0*lumin(1)/
      &                       (rad1_bpp**2.d0))**(1.d0/4.d0))
@@ -658,7 +658,7 @@
      &                      bacc(1),bacc(2),tacc(1),tacc(2),epoch(1),
      &                      epoch(2),bhspin1,bhspin2,
      &                      deltam_1,deltam_2,formation1,formation2,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    endif
                endif
 * USSN: if ussn flag is set, have reduced kicks for stripped He stars (SN=8)
@@ -809,7 +809,7 @@
      &                      bacc(2),bacc(1),tacc(2),tacc(1),epoch(2),
      &                      epoch(1),bhspin2,bhspin1,
      &                      deltam_2,deltam_1,formation2,formation1,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    else
                        teff1 = 1000.d0*((1130.d0*lumin(1)/
      &                       (rad1_bpp**2.d0))**(1.d0/4.d0))
@@ -827,7 +827,7 @@
      &                      bacc(1),bacc(2),tacc(1),tacc(2),epoch(1),
      &                      epoch(2),bhspin1,bhspin2,
      &                      deltam_1,deltam_2,formation1,formation2,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    endif
                endif
                CALL kick(KW2,M_postCE,M2,M1,ECC,SEP_postCE,
@@ -1044,7 +1044,7 @@
      &                      bacc(2),bacc(1),tacc(2),tacc(1),epoch(2),
      &                      epoch(1),bhspin2,bhspin1,
      &                      deltam_2,deltam_1,formation2,formation1,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    else
                        teff1 = 1000.d0*((1130.d0*lumin(1)/
      &                       (rad1_bpp**2.d0))**(1.d0/4.d0))
@@ -1062,7 +1062,7 @@
      &                      bacc(1),bacc(2),tacc(1),tacc(2),epoch(1),
      &                      epoch(2),bhspin1,bhspin2,
      &                      deltam_1,deltam_2,formation1,formation2,
-     &                      binstate,mergertype,'bpp')
+     &                      binstate,bhxrl,mergertype,'bpp')
                    endif
             endif
             CALL kick(KW,MF,M1,0.d0,0.d0,-1.d0,0.d0,vk,star1,

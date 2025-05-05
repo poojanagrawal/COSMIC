@@ -10,7 +10,7 @@
      &                      b_0_1,b_0_2,bacc1,bacc2,tacc1,tacc2,
      &                      epoch1,epoch2,bhspin1,bhspin2,
      &                      deltam_1,deltam_2,SN_1,SN_2,
-     &                      bin_state,merger_type,tabname)
+     &                      bin_state,bhxrl,merger_type,tabname)
         IMPLICIT NONE
         INCLUDE 'const_bse.h'
 
@@ -33,7 +33,7 @@
         INTEGER jp, col_ind
         INTEGER kstar1,kstar2
         REAL*8 yeardy,aursun,rsunau
-        REAL*8 all_cols(49)
+        REAL*8 all_cols(53)
         CHARACTER*3 tabname
         PARAMETER(yeardy=365.24d0,aursun=214.95d0)
 
@@ -94,6 +94,10 @@
         all_cols(47) = float(SN_2)
         all_cols(48) = bin_state
         all_cols(49) = merger_type
+        all_cols(50) = bhxrl(1)
+        all_cols(51) = bhxrl(2)
+        all_cols(52) = bhxrl(3)
+        all_cols(53) = bhxrl(4)
 
 * check which table we are writing to and write the appropriate columns
         if (tabname .eq. 'bpp') then

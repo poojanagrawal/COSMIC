@@ -1,5 +1,5 @@
 ! Data for the calculation X-ray luminosity of accreting BHs from Xie & Yuan (2012)
-! epsilon_* : log10 (radiative efficiency) (after converting % to fraction)
+! epsilon_* : log10 (radiative efficiency) (after converting % from original tables to fraction )
 ! mdot_ratio_*: log10 (mass accretion rate)
 
 real(dp), target :: mdot_ratio_low(100), epsilon_low(100), &

@@ -111,7 +111,6 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,sep,X,Lx)
             Lx(low) = mdot_net_csq*1d-6
         endif
     endif
-    
     contains
 
     function interpolate(xval,crit) result(yval)
@@ -119,7 +118,7 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,sep,X,Lx)
     real(dp), intent(in) :: xval
     integer, intent(in) :: crit
     real(dp) :: yval
-    integer :: left, right, mid, n
+    integer :: bot, top, mid, n
     real(dp) :: x1, x2, y1, y2
     real(dp), pointer :: xdata(:), ydata(:)
    
@@ -143,30 +142,30 @@ subroutine get_bhxrl(mass1,mass2,radius2,teff2,mdot_w2,sep,X,Lx)
     n = size(xdata)
     ! Handle out-of-bounds extrapolation
     if (xval <= xdata(1)) then
-        left = 1
-        right = 2
+        bot = 1
+        top = 2
     else if (xval >= xdata(n)) then
-        left = n-1
-        right = n
+        bot = n-1
+        top = n
     else
         ! Binary search
-        left = 1
-        right = n
-        do while (right - left > 1)
-          mid = (left + right) / 2
+        bot = 1
+        top = n
+        do while (top - bot > 1)
+          mid = (bot + top) / 2
           if (xval < xdata(mid)) then
-            right = mid
+            top = mid
           else
-            left = mid
+            bot = mid
           end if
         end do
     end if
 
     ! Linear interpolation
-    x1 = xdata(left)
-    x2 = xdata(right)
-    y1 = ydata(left)
-    y2 = ydata(right)
+    x1 = xdata(bot)
+    x2 = xdata(top)
+    y1 = ydata(bot)
+    y2 = ydata(top)
 
     yval = y1 + (xval-x1)*(y2-y1)/(x2-x1)
     ! for numerical raesons we interpolate in log quantities

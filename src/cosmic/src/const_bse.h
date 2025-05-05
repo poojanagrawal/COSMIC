@@ -45,7 +45,7 @@
       COMMON /TIDALVARS/ fprimc_array
       REAL*8 rejuv_fac
       COMMON /MIXVARS/ rejuv_fac
-      REAL*8 BHXRL(8)
+      REAL*8 BHXRL(4)
 *
       INTEGER*8 id1_pass,id2_pass,using_cmc
       REAL*8 merger
@@ -59,7 +59,7 @@
       REAL*8 bcm(50000,49),bpp(1000,49)
       COMMON /BINARY/ bcm,bpp
       INTEGER n_col_bpp, n_col_bcm
-      INTEGER col_inds_bpp(49), col_inds_bcm(49)
+      INTEGER col_inds_bpp(53), col_inds_bcm(53)
       COMMON /COL/ n_col_bpp,col_inds_bpp,n_col_bcm,col_inds_bcm
 *
       INTEGER using_metisse, using_sse
