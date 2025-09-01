@@ -1917,53 +1917,30 @@ def parse_inifile(inifile):
 
     return BSEDict, SSEDict, seed_int, filters, convergence, sampling
 
-def get_METISSE_files(path_to_tracks, path_to_he_tracks):
+def get_METISSE_metallicity_files(path_to_tracks):
     """Returns the path to the METISSE files
     
     Parameters
     ----------
     path_to_tracks : str
-        Path to the directory containing the METISSE tracks.
-    path_to_he_tracks : str
-        Path to the directory containing the METISSE He tracks.
+        Path to the directory containing the METISSE metallicity file(s) for hydrogen tracks
     
     Returns
     -------
-    eep_tracks : list
-        List of paths to the METISSE EEP tracks
-    he_eep_tracks : list
-        List of paths to the METISSE helium EEP tracks
     met_files : list
         List of paths to the METISSE metallicity files for hydrogen tracks
-    met_files_he : list
-        List of paths to the METISSE He metallicity files for helium trakcs
     """
     import os
     
     path_to_tracks = Path(path_to_tracks)
-    path_to_he_tracks = Path(path_to_he_tracks)
-
-    # first find all the EEPs in the specified directories
-    eep_dir = path_to_tracks / "eeps/"
-    he_eep_dir = path_to_he_tracks / "eeps/"
-    h_eep_tracks = [os.path.join(eep_dir, f) for f in os.listdir(eep_dir) if f.endswith("data.eep")]
-    he_eep_tracks = [os.path.join(he_eep_dir, f) for f in os.listdir(he_eep_dir) if f.endswith("data.eep")]
-
-    if len(h_eep_tracks) == 0:
-        raise ValueError("No METISSE tracks found in the specified path: {0}".format(eep_dir))
-    if len(he_eep_tracks) == 0:
-        raise ValueError("No METISSE He tracks found in the specified path: {0}".format(he_eep_dir))
     
     # Next also get the Metallicity files
     met_files = [os.path.join(path_to_tracks, f) for f in os.listdir(path_to_tracks) if f.endswith("metallicity.in")]
-    met_files_he = [os.path.join(path_to_he_tracks, f) for f in os.listdir(path_to_he_tracks) if f.endswith("metallicity.in")]
 
     if len(met_files) == 0:
         raise ValueError("No METISSE metallicity files found in the specified path: {0}".format(path_to_tracks))
-    if len(met_files_he) == 0:
-        raise ValueError("No METISSE He metallicity files found in the specified path: {0}".format(path_to_he_tracks))
     
-    return h_eep_tracks, he_eep_tracks, met_files, met_files_he
+    return met_files
 
 
 def read_metallicity_and_format(met_file_path):
@@ -2012,11 +1989,18 @@ def read_metallicity_and_format(met_file_path):
                 except ValueError:
                     met_dict[key] = value.strip("'\"")  # keep strings
     
-    # Convert paths to Path objects relative to metallicity file
+    # Check if the paths exist
+    # Otherwise convert paths to Path objects relative to metallicity file
     if 'eep_tracks_dir' in met_dict:
-        met_dict['eep_tracks_dir'] = met_file_path.parent / met_dict['eep_tracks_dir']
+        if os.exists(met_dict['eep_tracks_dir']) is False:
+            met_dict['eep_tracks_dir'] = met_file_path.parent / met_dict['eep_tracks_dir']
+    else:
+        raise ValueError("eep_tracks_dir not found in {0}".format (met_file_path)
     if 'format_file' in met_dict:
-        met_dict['format_file'] = met_file_path.parent / met_dict['format_file']
+        if os.exists(met_dict['format_file']) is False:
+            met_dict['format_file'] = met_file_path.parent / met_dict['format_file']
+    else:
+        raise ValueError("format_file not found in {0}".format (met_file_path)
     
     # --- Read format file ---
     fmt_dict = {}
@@ -2051,11 +2035,10 @@ def read_metallicity_and_format(met_file_path):
                             fmt_dict[key] = int(fmt_dict[key])
                     except ValueError:
                         fmt_dict[key] = value  # fallback
-    
-    return met_dict, fmt_dict
+        return met_dict, fmt_dict
 
 
-def read_eep_file(eep_path):
+def read_MIST_track(eep_path):
     track = {}
     track['filename'] = str(eep_path)
 
@@ -2112,9 +2095,35 @@ def read_eep_file(eep_path):
 
     return track
 
+def read_other_track(eep_path,header):
+    track = {}
+    track['filename'] = str(eep_path)
+
+    with eep_path.open() as f:
+        # Read lines sequentially to mimic Fortran
+        
+        if header>0:
+            for i in range(header):
+                f.readline()
 
 
-def read_eep_directory(eep_dir, pattern="*.eep"):
+            # Column names line
+            cols_line = f.readline()
+            track['cols'] = cols_line.split()[1:]  # list of strings start at 1 to skip # symbol
+        else:
+            #read column name file
+            
+        # track data
+        tr = np.zeros((track['ncol'], track['ntrack']), dtype=float)
+        for j in range(track['ntrack']):
+            data_line = f.readline()
+            values = [float(x) for x in data_line.split()]
+            tr[:, j] = values[:track['ncol']]
+        track['tr'] = tr
+
+    return track
+
+def read_eep_directory(eep_dir,fmt_dict):
     """
     Read all EEP files in a directory matching the given pattern and sort by
     the leading number in the filename.
@@ -2132,16 +2141,35 @@ def read_eep_directory(eep_dir, pattern="*.eep"):
         List of track dictionaries, each as returned by `read_eep_file`,
         sorted by the leading number in the filename.
     """
+    
     eep_dir = Path(eep_dir)
+    
+    
+    if fmt_dict['read_eep']:
+        pattern="*.eep"
+    else:
+        pattern = fmt_dict['file_extension']
+        header = fmt_dict['header_location']
+#        extra_char = ''
+#        column_name_file = ''
+#        total_cols = -1
+
     eep_files = list(eep_dir.glob(pattern))
 
-    # Sort files by the leading number in the filename
-    def extract_mass(f):
-        # Get the first integer before the first underscore
-        return int(f.stem.split('_')[0])
+    if len(eep_files) == 0:
+        raise ValueError("No eep tracks found in the specified path: {0}".format(eep_dir))
 
-    eep_files_sorted = sorted(eep_files, key=extract_mass)
-    tracks = [read_eep_file(f) for f in eep_files_sorted]
+    if fmt_dict['read_eep']:
+        # Sort files by the leading number in the filename
+        def extract_mass(f):
+            # Get the first integer before the first underscore
+            return int(f.stem.split('_')[0])
+
+        eep_files_sorted = sorted(eep_files, key=extract_mass)
+        tracks = [read_MIST_track(f) for f in eep_files_sorted]
+    else:
+        print('i dont know how to non mist files')
+        
     return tracks
 
 

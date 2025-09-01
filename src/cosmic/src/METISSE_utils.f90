@@ -18,7 +18,7 @@
             
         else
             print*,'Error: Front end mismtach in assign commons'
-            print*,'expected 2 (COSMIC); got ', front_end
+            print*,'expected 3 (COSMIC); got ', front_end
         endif
 
     end subroutine
